@@ -1,0 +1,220 @@
+---
+title: "変態統計学1～ggplotを用いたグラフィルデータ分析～"
+author: "教授：shichi　/　所属：cg研・midi研・プログラム研・統計班・電子煙草班・水煙草班"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,warning=FALSE)
+library(ggplot2)
+```
+
+____
+
+単位：★★★★☆　　内容：★☆☆☆☆
+
+◆単位は来るが教授は変態。むしろこっちが聴講料を払ってもらいたいくらいである。出席はとるが最後の試験の日に全裸で参戦するだけでA+をくれる。ただし男子生徒の場合は容赦なくFを付けられるので注意が必要。
+
+____
+
+#はじめに
+本資料はR言語を少しかじった程度の人、もしくは恐ろしく暇な変態がＲを使ってグラフィカルにデータを解析してみようという試みの元制作されました。制作に当たったのはペテン師のshichiです。プログラマー歴は一年も無いです。以後お見知り置きを。
+
+さて、ゲーム制作サークルと聞いてmis.wに入ってきた犠牲者の皆様。おめでとうございます。ついでばかりに言っておきますとこのR言語、論文とかで使うことが出来ますのでリアルな話役に立つと思います。少しだけ触ってみる事をおすすめします。それでは本編のほうに進んで参りましょう。
+
+##R言語とは
+![](http://1.bp.blogspot.com/-bZnkbAYiP_E/USiZYRRVZgI/AAAAAAAAAzI/IELLGR4GiYY/s1600/Shiny.png)
+
+R言語は統計処理をメインとしたスクリプト言語です。似ている言語はpythonだそうです。僕はルーキーぷろぐらまなので知りません。
+
+##環境設定
+まずは[R言語](https://cran.rstudio.com/)のインストールをしましょう。たぶんインストールとかは分かるので省略します。
+
+次に[RStudio](https://www.rstudio.com/products/rstudio/download/)という、便利にR言語を活用出来るIDEがあるので、この際インストールします。機能はFREE版で十分です。
+
+インストールが終了したらRStudioを立ち上げて見てください。以下のような画面に成っているはずです。（初期設定をわすれたので実際どうなってるかは知りませんが適当にいじれば成るはずです)
+
+![](https://oku.edu.mie-u.ac.jp/~okumura/stat/img/RStudio.png)
+
+左上のウィンドウでコードを書きます。書いたコードは同ウインドウ右上のSourceボタンを押すことで走らせる事が出来ます。
+
+右上のウインドウは基本的には作成したオブジェクトの一覧が表示される場所です。
+
+左下はコンソールになっていて実行結果によって数字がはき出されたり、また直接コードを書くことによってテスト実行的な事が出来るように成っています。
+
+最後に右下のウインドウではフォルダ構造や描画、リファレンス参照などを行うことが出来るように成っております。
+
+これで準備は完了です。あなたはいつでもRのスクリプトを書くことが出来るし、お好きな統計処理をすることが出来ます。
+
+____
+
+
+#ggplotで遊ぼう！！！
+ggplotとは、Ｒ言語を用いて美しい図やグラフを簡単に実装できるライブラリである。
+
+以下のような図を実装する事が出来ます
+
+![](http://genshi.ro/wp-content/uploads/2011/08/ggplot2_viewport_sample.png)
+
+それでは早速なんかしらつくって見ましょう。
+
+
+____
+
+
+
+##散布図 geom_point()
+
+```{r}
+#irisのサンプルデータを読み込みます
+data(iris)
+```
+
+中身（一部）：
+```{r}
+head(iris) #head()でデータフレームの一部を表示することが出来ます
+```
+
+###通常の散布図
+
+```{r}
+#x軸をSepal.Length、y軸をSepal.Widthとした枠を作成します。
+p <- ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width))
+
+#上で作成したグラフ枠内にプロットしていきます。
+p <- p + geom_point()
+p
+```
+
+このように簡単に散布図を作成することが出来るのです。次はこの散布図をSpeciesごとに色分けをしてみることにします。
+
+###色分けされた散布図
+
+```{r}
+#x軸をSepal.Length、y軸をSepal.Widthとした枠を作成します。
+p <- ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width))
+
+#上で作成したグラフ枠内にプロットしていきます。（Species毎にカラーリングします）
+p <- p + geom_point(aes(colour=Species))
+p
+```
+
+geom_point()のカッコのなかにカラー対応させたい属性を指定するだけで簡単に色分けまでできることがわかりました。このようにggplotにおけるグラフへの加筆、属性追加は基本的にはレイヤーの足し算のような雰囲気で理解していただけると理解がスムーズになるような気がします。それではそれっぽい感じのグラフになるように一気に実装して見ましょう。
+
+###良い感じの散布図
+
+```{r}
+#x軸をSepal.Length、y軸をSepal.Widthとした枠を作成します。
+p <- ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width))
+
+#上で作成したグラフ枠内にプロットしていきます。
+p <- p + geom_point(aes(colour=factor(Petal.Width), shape=Species))+ ggtitle("IRIS Length/Width") + xlab("Length") + ylab("Width")
+p
+```
+
+ggtitle:タイトルを挿入します　　xlab:x軸タイトルを挿入します　　ylab:y軸タイトルを挿入します
+図と見比べれば何となくわかると思います。このほかにもプロットの大きさや近似線などいろいろなものを指定出来ますので試してみてください。
+
+____
+
+
+##折れ線グラフ geom_line()
+
+###近似線つき折れ線グラフ
+
+引き続きirisのデータを使用します。前回のgeom_point()をgeom_line()に置き換えるだで折れ線グラフにすることが出来ます。
+
+```{r}
+#x軸をSepal.Length、y軸をSepal.Widthとした枠を作成します。
+p <- ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width))
+
+#上で作成したグラフ枠内にプロットしていきます。
+p <- p + geom_line()+ ggtitle("IRIS Length/Width") + xlab("Length") + ylab("Width")
+p <- p + geom_smooth (size = 0.1) #近似線を描く(sizeで線の太さの指定)
+p
+```
+
+###複数の折れ線グラフ
+
+折れ線グラフを作成する際に系統ごとに折れ線を作成し比較したいことがあると思います。今回はそのようなグラフを作成します。
+
+```{r}
+#x軸をSepal.Length、y軸をSepal.Widthとした枠を作成します。
+p <- ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width, group=Species, colour=Species))
+
+#上で作成したグラフ枠内にプロットしていきます。
+p <- p + geom_line()+ ggtitle("IRIS Length/Width") + xlab("Length") + ylab("Width")
+p
+```
+
+____
+
+
+##棒グラフ geom_bar()
+
+###通常の棒グラフ
+
+通常の棒グラフを作ります。今回は長さ毎に区切ったときの該当数をカウントし、それを棒グラフにしました。
+geom_bar()はyを指定しないとこのような仕様になります。
+
+```{r}
+#x軸をSepal.Length、y軸をSepal.Widthとした枠を作成します。
+p <- ggplot(iris, aes(x=Sepal.Length))
+
+#上で作成したグラフ枠内にプロットしていきます。
+p <- p + geom_bar()+ ggtitle("IRIS count Length")+ xlab("Length") 
+p
+```
+
+### Species毎Length総計の棒グラフ
+
+一番地道にlengthの総計の棒グラフを描かせるには、一度irisのデータを集計・加工しSpeciesとその集計のみからなるデータフレームをつくると良いでしょう。しかし加工なしでggplotのみによって実装しようとすると下のようになります。
+
+```{r}
+  #x軸をSpecies、y軸をSepal.Lengthとした枠を作成します
+  p <- ggplot(iris, aes(y=Sepal.Length, x=Species))
+
+  #上で作成したグラフ枠内にプロットしていきます。
+  p <- p + stat_summary(fun.y=sum,geom="bar") + ggtitle("IRIS sum Length") + xlab("Species") + ylab("Length")
+  p
+```
+
+stat_summary(fun.y=sum,geom="bar")のfun.yにsumを指定する事によって合計を集計した棒グラフを作成する事が出来ます。また代わりにmeanを指定すると平均値の集計グラフが出来るなど、様々な活用ができます。
+
+### 積み上げ棒グラフ
+
+fillに値を指定する事で下図のような積み上げ棒グラフを作成することが出来ます。
+
+```{r}
+#x軸をSepal.Length、y軸をSepal.Widthとした枠を作成します。
+p <- ggplot(iris, aes(x=Sepal.Length,y=Sepal.Width,fill=Species))
+
+#上で作成したグラフ枠内にプロットしていきます。
+p <- p + geom_bar(stat = "identity")+ ggtitle("IRIS Length/Width") + xlab("Length") + ylab("Width")
+p
+```
+
+____
+
+##ヒストグラム geom_histogram()
+
+### Speciesごとのヒストグラム
+
+```{r}
+#x軸をSepal.Length、y軸をSepal.Widthとした枠を作成します。
+p <- ggplot(iris, aes(x=Sepal.Length,fill=Species))
+
+#上で作成したグラフ枠内にプロットしていきます。
+p <- p + geom_histogram(position = "identity",alpha = 0.5)+ ggtitle("IRIS Length Hist") + xlab("Length") + ylab("Hist")
+p
+```
+
+alphaの値を指定する事によって透明度をいじる事が出来ます。
+またpositionにはいろいろな値を指定する事が出来ます。
+
+![](manual/ca4.PNG)
+
+____
+
+#終わりに
+
+このほかにもggplotにはたくさんの機能が有ります。利用できるものは利用していき、これからの学生生活に役立てていきましょう！

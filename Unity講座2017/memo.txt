@@ -1,0 +1,7 @@
+Unity講座2017	50代Unity班 Tahara
+
+プロジェクトファイルを.zipにして入れておきました.
+Assetフォルダ内にスクリプトがあります. 1_2以降でスクリプトを書く際に参考にしてください.
+
+プロジェクト容量が大きいため,配布できない場合のためにGoogleDriveにも保存しました.
+https://drive.google.com/open?id=0B3Ffe_VakfuTdFpFNWZzcTE1ZG8
