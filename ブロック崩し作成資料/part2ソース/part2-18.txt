@@ -1,0 +1,49 @@
+#include "DxLib.h"
+
+//x方向のブロックの数
+#define BLOCK_X_NUM 10
+//y方向のブロックの数
+#define BLOCK_Y_NUM 5
+
+// プログラムは WinMain から始まります
+int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
+						LPSTR lpCmdLine, int nCmdShow )
+{
+	ChangeWindowMode(TRUE);//ウィンドウモードで起動
+
+	DxLib_Init();		// ＤＸライブラリ初期化処理
+
+	//初期化処理はここに書く！！
+	int sizeX=40;//箱の横の長さ
+	int sizeY=10;//箱の縦の長さ
+
+	//裏画面に描画することを決定。
+	SetDrawScreen(DX_SCREE_BACK);
+
+	while(ProcessMessage()==0){
+
+		//描画されているものを消す。
+		ClearDrawScreen();
+
+		//メインループの動作はここに書く！！
+		//箱の描画
+		for(int i=0;i<BLOCK_X_NUM;i++){
+			for(int j=0;j<BLOCK_Y_NUM;j++){
+				int x1 = (sizeX+10)*i;
+				int y1 = (sizeY+10)*j;
+				int x2 = x1 + sizeX;
+				int y2 = y1 + sizeY;
+				DrawBox(x1,y1,x2,y2,GetColor(255,255,255),TRUE);
+			}
+		}
+		
+		//裏画面の描画状態を表に反映
+		ScreenFlip();
+	}
+	
+	WaitKey() ;				// キー入力待ち
+	
+	DxLib_End() ;				// ＤＸライブラリ使用の終了処理
+
+	return 0 ;				// ソフトの終了 
+}

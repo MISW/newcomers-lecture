@@ -1,0 +1,114 @@
+1.
+3つの整数を引数とし、その3つの引数の和を表示する関数を作れ。
+
+2.
+四角形の縦の長さと横の長さを引数とし、
+四角形の面積を返す関数を作れ。
+
+3.
+受け取った引数をxとした時、
+x^3-3x^2を返す関数を作れ。
+
+
+
+以下解答。
+解答の関数名や変数名は自由である。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1.
+#include<stdio.h>
+
+void ThreeNumPlus(int a,int b,int c){
+	
+	printf("%d + %d + %d = %d\n",a,b,c,a+b+c);
+	
+}
+
+int main(){
+	
+	ThreeNumPlus(10,20,30);
+	
+	return 0;
+}
+
+2.
+#include<stdio.h>
+
+double SquareSpace(double a,double b){
+	
+	return a * b ;
+	
+}
+
+int main(){
+	
+	double ans;
+	
+	ans = SquareSpace(20,20);
+	
+	printf("四角形の面積は %f\n",ans);
+	
+	return 0;
+}
+
+3.
+#include<stdio.h>
+
+double function(double x){
+	
+	return x*x*x-3*x*x;
+	
+}
+
+int main(){
+	
+	double ans = function(4.0);
+	
+	printf("ans = %f",ans);
+	
+	return 0;
+}

@@ -1,0 +1,240 @@
+#include "DxLib.h"
+
+//x方向のブロックの数
+#define BLOCK_X_NUM 10
+//y方向のブロックの数
+#define BLOCK_Y_NUM 5
+
+class Block_obj{
+private:
+	int x,y;         //ブロックの左端の座標
+	int sizeX,sizeY; //ブロックの横の長さ、縦の長さ
+	int color;       //ブロックの色
+	int flag;        //ブロックがあるかないか。 0:ない、1:ある
+public:
+	int GetX(),GetY();
+	int GetSizeX(),GetSizeY();
+	int GetFlag();
+	void Set(int setX,int setY,int setColor); //ブロックの初期化を行う。
+	void Graph();       //ブロックの描画
+	void Delete();   //ブロックを消す関数
+};
+
+class Ball_obj{
+private:
+	int x,y,r;   //ボールの位置成分
+	int vx,vy;   //ボールの速度成分
+	int color;   //ボールの色
+public:
+	int GetX(),GetY(),GetR();
+	int GetVX(),GetVY();
+	void Set(int setX,int setY,int setR,
+		int setVX,int setVY,int setColor); //ボールの初期化
+	void Graph();   //ボールの描画
+	void Calc();    //ボールの計算
+};
+
+class MyBlock_obj{
+private:
+	int x,y;
+	int sizeX,sizeY;
+	int color;
+public:
+	int GetX(),GetY();
+	int GetSizeX(),GetSizeY();
+	void Set();   //この関数にてx,y,sizeX,sizeY,colorを決定する。
+	void Graph(); //自分が操作するブロックの描画。
+	void Calc();  //操作するのでその計算関数。
+};
+
+Block_obj Block[BLOCK_X_NUM][BLOCK_Y_NUM];
+Ball_obj Ball;
+MyBlock_obj MyBlock;
+
+int Block_obj::GetX(){
+	return x;
+}
+int Block_obj::GetY(){
+	return y;
+}
+int Block_obj::GetSizeX(){
+	return sizeX;
+}
+int Block_obj::GetSizeY(){
+	return sizeY;
+}
+int Block_obj::GetFlag(){
+	return flag;
+}
+
+void Block_obj::Set(int setX,int setY,int setColor){
+	x = setX;
+	y = setY;
+	color = setColor;
+	sizeX = 40;
+	sizeY = 10;
+	flag = 1;
+}
+void Block_obj::Graph(){
+	if(flag == 1){
+		DrawBox(x,y,x+sizeX,y+sizeY,color,TRUE);
+	}
+}
+void Block_obj::Delete(){
+	flag = 0;
+}
+
+int Ball_obj::GetX(){
+	return x;
+}
+int Ball_obj::GetY(){
+	return y;
+}
+int Ball_obj::GetR(){
+	return r;
+}
+int Ball_obj::GetVX(){
+	return vx;
+}
+int Ball_obj::GetVY(){
+	return vy;
+}
+void Ball_obj::Set(int setX,int setY,int setR,
+	int setVX,int setVY,int setColor){
+
+		x = setX;
+		y = setY;
+		r = setR;
+		vx = setVX;
+		vy = setVY;
+		color = setColor;
+}
+void Ball_obj::Graph(){
+	DrawCircle(x,y,r,color,TRUE);
+}
+void Ball_obj::Calc(){
+	//ボールが場外に行ってしまった時。
+	if( x + vx >= 640 || x + vx <= 0 ){
+		vx *= -1;
+	}
+	if( y + vy >= 480 || y + vy <= 0 ){
+		vy *= -1;
+	}
+	//ボールとブロックの当たり判定、
+	for(int i=0;i<BLOCK_X_NUM;i++){
+		for(int j=0;j<BLOCK_Y_NUM;j++){
+			//ブロックがある時は計算する。
+			if(Block[i][j].GetFlag()==1){
+				//ブロックの左に当たる時。
+				if( x < Block[i][j].GetX() && x + vx + r >= Block[i][j].GetX() &&
+					y + vy + r >Block[i][j].GetY() && 
+					y + vy - r<= Block[i][j].GetY() + Block[i][j].GetSizeY()){
+
+						vx *= -1;
+						Block[i][j].Delete();
+				}
+				//ブロックの右に当たる時。
+				if( x > Block[i][j].GetX() + Block[i][j].GetSizeX() && 
+					x + vx - r < Block[i][j].GetX() +Block[i][j].GetSizeX()&&
+					y + vy + r >Block[i][j].GetY() && 
+					y + vy - r<= Block[i][j].GetY() + Block[i][j].GetSizeY()){
+	
+						vx *= -1;
+						Block[i][j].Delete();
+				}
+				//ブロックの下に当たる時。
+					if ( y > Block[i][j].GetY() + Block[i][j].GetSizeY() &&
+					y + vy - r <= Block[i][j].GetY() + Block[i][j].GetSizeY() &&
+					x + vx + r >= Block[i][j].GetX() &&
+					x + vx - r <= Block[i][j].GetX() + Block[i][j].GetSizeX()){
+						
+						vy *= -1;
+						Block[i][j].Delete();
+					}
+				//ブロックの上に当たる時。
+				if ( y < Block[i][j].GetY() &&
+					y + vy + r >= Block[i][j].GetY() &&
+					x + vx + r >= Block[i][j].GetX() &&
+					x + vx - r <= Block[i][j].GetX() + Block[i][j].GetSizeX()){
+	
+						vy *= -1;
+						Block[i][j].Delete();
+				}	
+			}
+		}
+	}
+
+	x+=vx;
+	y+=vy;
+}
+
+int MyBlock_obj::GetX(){
+	return x;
+}
+int MyBlock_obj::GetY(){
+	return y;
+}
+int MyBlock_obj::GetSizeX(){
+	return sizeX;
+}
+int MyBlock_obj::GetSizeY(){
+	return sizeY;
+}
+void MyBlock_obj::Set(){
+	x = 240;
+	y = 400;
+	sizeX = 100;
+	sizeY = 30;
+	color = GetColor(128,128,128);
+}
+void MyBlock_obj::Graph(){
+	DrawBox(x,y,x+sizeX,y+sizeY,color,TRUE);
+}
+
+// プログラムは WinMain から始まります
+int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
+						LPSTR lpCmdLine, int nCmdShow )
+{
+	ChangeWindowMode(TRUE);//ウィンドウモードで起動	
+	DxLib_Init();	// ＤＸライブラリ初期化処理
+	
+	//裏画面に描画することを決定。
+	SetDrawScreen(DX_SCREEN_BACK);
+
+	//初期化設定はここに書く！
+
+	//ブロックの設定
+	for(int i=0;i<BLOCK_X_NUM;i++){
+		for(int j=0;j<BLOCK_Y_NUM;j++){
+			Block[i][j].Set(50*i,20*j,GetColor(255,255,255));
+		}
+	}
+
+	//ボールの設定
+	Ball.Set(200,400,5,5,-6,GetColor(0,0,255));
+
+	while(ProcessMessage()==0){
+
+		//描画されているものを消す。
+		ClearDrawScreen();
+		//メインループの動作はここに書く！！
+
+		//ブロックの描画
+		for(int i=0;i<BLOCK_X_NUM;i++){
+			for(int j=0;j<BLOCK_Y_NUM;j++){
+				Block[i][j].Graph();
+			}
+		}
+		//ボールの描画＋移動
+		Ball.Graph();
+		Ball.Calc();
+		//裏画面の描画状態を表に反映
+		ScreenFlip();
+	}
+
+	WaitKey() ;				// キー入力待ち
+
+	DxLib_End() ;				// ＤＸライブラリ使用の終了処理
+
+	return 0 ;				// ソフトの終了 
+}
