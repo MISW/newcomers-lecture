@@ -1,0 +1,40 @@
+#include "DxLib.h"
+
+// プログラムは WinMain から始まります
+int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
+						LPSTR lpCmdLine, int nCmdShow )
+{
+	ChangeWindowMode(TRUE);//ウィンドウモードで起動
+
+	DxLib_Init();		// ＤＸライブラリ初期化処理
+
+	//初期化処理はここに書く！！
+
+	//裏画面に描画することを決定。
+	SetDrawScreen(DX_SCREE_BACK);
+
+	//箱の左上の初期座標
+	int x1=50,x2=200,vx=1;
+
+	while(ProcessMessage()==0){
+
+		//描画されているものを消す。
+		ClearDrawScreen();
+
+		//メインループの動作はここに書く！！
+		DrawBox(x,50,x2,120,GetColor(255,255,255),TRUE);
+
+		//箱のx座標を動かす。
+		x1+=vx;
+		x2+=vx;
+		
+		//裏画面の描画状態を表に反映
+		ScreenFlip();
+	}
+	
+	WaitKey() ;				// キー入力待ち
+	
+	DxLib_End() ;				// ＤＸライブラリ使用の終了処理
+
+	return 0 ;				// ソフトの終了 
+}

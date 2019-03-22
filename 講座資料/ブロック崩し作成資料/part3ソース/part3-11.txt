@@ -1,0 +1,66 @@
+#include "DxLib.h"
+
+//x方向のブロックの数
+#define BLOCK_X_NUM 10
+//y方向のブロックの数
+#define BLOCK_Y_NUM 5
+
+typedef struct{
+	int x,y;
+	int sizeX,sizeY;
+	int color;
+}Block_obj;
+
+
+// プログラムは WinMain から始まります
+int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
+						LPSTR lpCmdLine, int nCmdShow )
+{
+	ChangeWindowMode(TRUE);//ウィンドウモードで起動
+
+	DxLib_Init();		// ＤＸライブラリ初期化処理
+
+	//初期化処理はここに書く！！
+
+	//裏画面に描画することを決定。
+	SetDrawScreen(DX_SCREE_BACK);
+
+	//Block_objというパッケージを持ったBlockを宣言
+	Block_obj Block[BLOCK_X_NUM][BLOCK_Y_NUM];
+
+	//ブロックの位置設定
+	for(int i=0;i<BLOCK_X_NUM;i++){
+		for(int j=0;j<BLOCK_Y_NUM;j++){
+			Block[i][j].sizeX=40;
+			Block[i][j].sizeY=10;
+			Block[i][j].x    =(Block[i][j].sizeX+10)*i;
+			Block[i][j].y    =(Block[i][j].sizeY+10)*j;
+			Block[i][j].color=GetColor(255,255,255);
+		}
+	}
+
+	while(ProcessMessage()==0){
+		
+		//描画されているものを消す。
+		ClearDrawScreen();
+
+		//メインループの動作はここに書く！！
+
+		//ブロックの描画
+		for(int i=0;i<BLOCK_X_NUM;i++){
+			for(int j=0;j<BLOCK_Y_NUM;j++){
+				DrawBox(Block[i][j].x,Block[i][j].y,
+					Block[i][j].x+Block[i][j].sizeX,Block[i][j].y+Block[i][j].sizeY,
+					Block[i][j].color,TRUE); 
+			}
+		}
+		//裏画面の描画状態を表に反映
+		ScreenFlip();
+	}
+	
+	WaitKey() ;				// キー入力待ち
+	
+	DxLib_End() ;				// ＤＸライブラリ使用の終了処理
+
+	return 0 ;				// ソフトの終了 
+}
