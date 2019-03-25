@@ -44,7 +44,7 @@
  ![](images/s_8.png)
 
  ホストをGitHubに変更し、接続アカウントをクリックしてください。
- (GitHubのアカウントが作成できていない人は、[GitHubアカウント作成](#)を参考に作成してください)
+ (GitHubのアカウントが作成できていない人は、[GitHubアカウント作成](../GitHub/GitHub.md)を参考に作成してください)
 
  ![](images/s_9.png)
 
@@ -75,4 +75,4 @@
 
  ![](images/s_14.png)
 
- この先は、[Sourcetree使い方、Git関連](#)を参考にしてください。
+ この先は、[Sourcetree使い方、Git関連](Tutorial.md)を参考にしてください。
